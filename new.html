@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Ücretsiz Sayfa</title>
+  <style>
+    body {
+      text-align: center;
+      background-color: #f0f0f0;
+      margin-top: 50px;
+      font-family: Arial, sans-serif;
+    }
+    img {
+      max-width: 90%;
+      height: auto;
+      cursor: pointer;
+    }
+    a.text-link {
+      display: block;
+      margin-top: 20px;
+      font-size: 24px;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Resme tıklanırsa login.html'e gider -->
+  <a href="login.html">
+    <img src="https://i.hizliresim.com/3o8ajat.jpg" alt="Resim Yükle">
+  </a>
+
+  <!-- "Ücretsiz" yazısına tıklanırsa login.html'e gider -->
+  <a href="login.html" class="text-link">Ücretsiz</a>
+
+  <!-- Arka planda otomatik müzik -->
+  <audio id="bgmusic" src="coc.mp3" autoplay loop muted></audio>
+
+  <script>
+    // Sayfa yüklendikten sonra sesi aktif eder
+    window.addEventListener('DOMContentLoaded', () => {
+      const audio = document.getElementById('bgmusic');
+      audio.muted = false;
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log("Tarayıcı otomatik oynatmayı engelledi:", error);
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
